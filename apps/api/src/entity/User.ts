@@ -23,9 +23,6 @@ export class User {
     @Column()
     password: string
 
-    @Column()
-    birthDate: Date
-
     @Column({nullable: true})
     carPlate?: string
 
