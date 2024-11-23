@@ -1,5 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
 
+enum Role{
+    DRIVER="driver",
+    ADMIN="admin"
+}
+
 @Entity()
 export class User {
 
@@ -12,7 +17,21 @@ export class User {
     @Column()
     lastName: string
 
-    @Column()
-    age: number
+    @Column({ unique: true })
+    email: string
 
+    @Column()
+    password: string
+
+    @Column()
+    birthDate: Date
+
+    @Column({nullable: true})
+    carPlate?: string
+
+    @Column({
+        type: "enum",
+        enum: Role
+    })
+    role: Role
 }
