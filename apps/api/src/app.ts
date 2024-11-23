@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { userRoutes, registerRoutes, authRoutes } from "./route";
+import { userRoutes, registerRoutes, authRoutes, storageRoutes } from "./route";
 import { authMiddleware } from "./middleware";
 
 const app = express();
@@ -13,6 +13,7 @@ app.use('/api', authRoutes);
 app.use(authMiddleware());
 
 app.use('/api', userRoutes)
+app.use('/api', storageRoutes)
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
