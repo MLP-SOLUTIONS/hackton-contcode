@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
+import { Control } from "./Control"
 
 enum Role{
     DRIVER="driver",
@@ -31,4 +32,18 @@ export class User {
         enum: Role
     })
     role: Role
+
+    @OneToMany(()=>Control, (control)=> control.user)
+    controls: Control[]
+
+    toJSON() {
+        return {
+            id: this.id,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            email: this.email,
+            carPlate: this.carPlate,
+            role: this.role
+        }
+    }
 }
