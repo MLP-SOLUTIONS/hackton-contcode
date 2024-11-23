@@ -1,9 +1,7 @@
-import express from 'express';
+import "reflect-metadata";
+import { app } from './app'
+import { databaseConnection } from "./database";
 
-const app = express();
-
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+databaseConnection();
 
 app.listen(3000, () => console.log('Server is running'));
