@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../entity/User"
 import { userRepository } from "../repository";
+import bcrypt from 'bcrypt';
 
 export class UserController{
 
@@ -12,7 +13,7 @@ export class UserController{
         newUser.firstName = firstName;
         newUser.lastName = lastName;
         newUser.email = email;
-        newUser.password = password;
+        newUser.password = await bcrypt.hash(password, 10);
         newUser.carPlate = carPlate;
         newUser.role = role;
 
@@ -23,14 +24,14 @@ export class UserController{
         });
 
         if (user){
-            res.status(401).send({message: "Email já cadastrado no banco de dados!"});
+            return res.status(401).json({message: "Email já cadastrado no banco de dados!"});
         }
 
         try{
-            const user = await userRepository.save(newUser);
-            res.status(201).send(user);
+            const savedUser = await userRepository.save(newUser);
+            return res.status(201).json(savedUser);
         }catch(error){
-            res.status(400).send({message: "Erro ao criar registro!"});
+            return res.status(400).json({message: "Erro ao criar registro!"});
         }
 
     }
@@ -39,7 +40,7 @@ export class UserController{
 
         const users = await userRepository.find();
 
-        res.status(200).send(users)
+        return res.status(200).send(users)
         
     }
 
@@ -50,10 +51,10 @@ export class UserController{
         const user = await userRepository.findOneBy({id: Number(userId)});
 
         if(!user){
-            res.status(404).send();
+            return res.status(404).send();
         }
 
-        res.status(200).send(user);
+        return res.status(200).send(user);
 
     }
 
@@ -67,17 +68,17 @@ export class UserController{
             const user = await userRepository.findOneBy({id: Number(userId)});
 
             if(!user){
-                res.send(404).send();
+                return res.send(404).send();
             }
 
             userRepository.merge(user, newUserData);
             await userRepository.save(user);
 
-            res.status(200).send(user);
+            return res.status(200).send(user);
 
         }catch(error){
 
-            res.status(500).send({message: "Erro ao atualizar usuário!", error});
+            return res.status(500).send({message: "Erro ao atualizar usuário!", error});
 
         }
 
@@ -90,12 +91,12 @@ export class UserController{
         const user = await userRepository.findOneBy({id: Number(userId)});
 
         if(!user){
-            res.status(404).send();
+            return res.status(404).send();
         }
 
         await userRepository.delete({id:Number(userId)});
 
-        res.status(204).send();
+        return res.status(204).send();
     }
 
 }
